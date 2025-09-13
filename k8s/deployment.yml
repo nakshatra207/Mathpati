@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: Mathpati-frontend
+  namespace: mathpati
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: Mathpati
+  template:
+    metadata:
+      labels:
+        app: Mathpati
+    spec:
+      containers:
+      - name: frontend
+        image: .dkr.ecr.ap-south-1.amazonaws.com/Mathpati-frontend:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: Mathpati-service
+  namespace: mathpati
+spec:
+  type: LoadBalancer
+  selector:
+    app: Mathpati
+  ports:
+  - port: 80
+    targetPort: 80
