@@ -1,4 +1,4 @@
-import { QuizGame } from '@/components/QuizGame';
+import { QuizGame } from "@/components/QuizGame";
 
 const Index = () => {
   return <QuizGame />;

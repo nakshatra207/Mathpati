@@ -1,12 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { Users, Share2, Copy, Check, Smartphone } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { type Question } from '@/data/questions';
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { Users, Share2, Copy, Check, Smartphone } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { type Question } from "@/data/questions";
 
 interface AudiencePollShareProps {
   isOpen: boolean;
@@ -15,10 +20,15 @@ interface AudiencePollShareProps {
   onPollComplete: (results: number[]) => void;
 }
 
-export function AudiencePollShare({ isOpen, onClose, question, onPollComplete }: AudiencePollShareProps) {
+export function AudiencePollShare({
+  isOpen,
+  onClose,
+  question,
+  onPollComplete,
+}: AudiencePollShareProps) {
   const [pollResults, setPollResults] = useState<number[]>([0, 0, 0, 0]);
   const [totalVotes, setTotalVotes] = useState(0);
-  const [shareUrl, setShareUrl] = useState('');
+  const [shareUrl, setShareUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
   const [isActive, setIsActive] = useState(false);
@@ -50,14 +60,15 @@ export function AudiencePollShare({ isOpen, onClose, question, onPollComplete }:
   useEffect(() => {
     if (isActive) {
       const interval = setInterval(() => {
-        if (Math.random() > 0.7) { // 30% chance of new vote every 2 seconds
+        if (Math.random() > 0.7) {
+          // 30% chance of new vote every 2 seconds
           const randomOption = Math.floor(Math.random() * 4);
-          setPollResults(prev => {
+          setPollResults((prev) => {
             const newResults = [...prev];
             newResults[randomOption]++;
             return newResults;
           });
-          setTotalVotes(prev => prev + 1);
+          setTotalVotes((prev) => prev + 1);
         }
       }, 2000);
 
@@ -85,14 +96,15 @@ export function AudiencePollShare({ isOpen, onClose, question, onPollComplete }:
 
   const finalizePoll = () => {
     setIsActive(false);
-    
+
     // Convert votes to percentages
-    const percentages = totalVotes > 0 
-      ? pollResults.map(votes => Math.round((votes / totalVotes) * 100))
-      : [25, 25, 25, 25]; // Default if no votes
+    const percentages =
+      totalVotes > 0
+        ? pollResults.map((votes) => Math.round((votes / totalVotes) * 100))
+        : [25, 25, 25, 25]; // Default if no votes
 
     onPollComplete(percentages);
-    
+
     toast({
       title: "Poll Completed! 🗳️",
       description: `${totalVotes} people voted. Here are the results!`,
@@ -117,14 +129,19 @@ export function AudiencePollShare({ isOpen, onClose, question, onPollComplete }:
             )}
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           {/* Question Display */}
           <Card className="p-4 border-primary/20">
-            <h3 className="font-semibold text-lg mb-4 text-center">{question.question}</h3>
+            <h3 className="font-semibold text-lg mb-4 text-center">
+              {question.question}
+            </h3>
             <div className="grid grid-cols-2 gap-3">
               {question.options.map((option, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-secondary/30 rounded-lg"
+                >
                   <span className="text-sm">
                     <strong>{String.fromCharCode(65 + index)}.</strong> {option}
                   </span>
@@ -141,15 +158,23 @@ export function AudiencePollShare({ isOpen, onClose, question, onPollComplete }:
                 <span className="font-medium">Share with Your Audience</span>
               </div>
               <div className="flex gap-2">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={shareUrl}
                   readOnly
                   className="flex-1 px-3 py-2 text-sm bg-background border rounded-lg"
                 />
-                <Button size="sm" onClick={copyShareUrl} className="flex items-center gap-2">
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copied ? 'Copied!' : 'Copy'}
+                <Button
+                  size="sm"
+                  onClick={copyShareUrl}
+                  className="flex items-center gap-2"
+                >
+                  {copied ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                  {copied ? "Copied!" : "Copy"}
                 </Button>
               </div>
               <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
@@ -164,10 +189,10 @@ export function AudiencePollShare({ isOpen, onClose, question, onPollComplete }:
             <div className="flex items-center justify-between">
               <h4 className="font-medium">Live Results</h4>
               <Badge variant="outline">
-                {totalVotes} {totalVotes === 1 ? 'vote' : 'votes'}
+                {totalVotes} {totalVotes === 1 ? "vote" : "votes"}
               </Badge>
             </div>
-            
+
             <div className="space-y-3">
               {question.options.map((option, index) => (
                 <div key={index} className="space-y-2">
@@ -184,8 +209,8 @@ export function AudiencePollShare({ isOpen, onClose, question, onPollComplete }:
                       </span>
                     </div>
                   </div>
-                  <Progress 
-                    value={getPercentage(pollResults[index])} 
+                  <Progress
+                    value={getPercentage(pollResults[index])}
                     className="h-3"
                   />
                 </div>
@@ -204,7 +229,7 @@ export function AudiencePollShare({ isOpen, onClose, question, onPollComplete }:
                 Use These Results
               </Button>
             )}
-            
+
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
