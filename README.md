@@ -7,6 +7,7 @@ Kaun Banega Mathpati is an interactive math quiz game that tests your mathematic
 ## How to Get Started
 
 ### Prerequisites
+
 - Node.js & npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 ### Development Setup

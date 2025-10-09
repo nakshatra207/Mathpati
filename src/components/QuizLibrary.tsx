@@ -1,14 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { useToast } from '@/hooks/use-toast';
-import { Quiz, QuizFilters } from '@/types/quiz';
-import { Search, Plus, Play, Edit, Trash2, Calendar, Tag, BookOpen, Filter, Download, Upload, FileText, Code } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { Quiz, QuizFilters } from "@/types/quiz";
+import {
+  Search,
+  Plus,
+  Play,
+  Edit,
+  Trash2,
+  Calendar,
+  Tag,
+  BookOpen,
+  Filter,
+  Download,
+  Upload,
+  FileText,
+  Code,
+} from "lucide-react";
 
 interface QuizLibraryProps {
   onCreateQuiz: () => void;
@@ -18,16 +54,22 @@ interface QuizLibraryProps {
   onBack: () => void;
 }
 
-export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFromQuestions, onBack }: QuizLibraryProps) {
+export function QuizLibrary({
+  onCreateQuiz,
+  onEditQuiz,
+  onPlayQuiz,
+  onCreateFromQuestions,
+  onBack,
+}: QuizLibraryProps) {
   const { toast } = useToast();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  const [jsonInput, setJsonInput] = useState('');
+  const [jsonInput, setJsonInput] = useState("");
   const [showJsonInput, setShowJsonInput] = useState(false);
   const [filters, setFilters] = useState<QuizFilters>({
-    category: 'all',
-    difficulty: 'all',
-    searchTerm: '',
-    tags: []
+    category: "all",
+    difficulty: "all",
+    searchTerm: "",
+    tags: [],
   });
 
   useEffect(() => {
@@ -35,19 +77,21 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
   }, []);
 
   const loadQuizzes = () => {
-    const savedQuizzes = localStorage.getItem('savedQuizzes');
+    const savedQuizzes = localStorage.getItem("savedQuizzes");
     if (savedQuizzes) {
       const parsed = JSON.parse(savedQuizzes);
-      setQuizzes(parsed.map((quiz: any) => ({
-        ...quiz,
-        createdAt: new Date(quiz.createdAt),
-        updatedAt: new Date(quiz.updatedAt)
-      })));
+      setQuizzes(
+        parsed.map((quiz: any) => ({
+          ...quiz,
+          createdAt: new Date(quiz.createdAt),
+          updatedAt: new Date(quiz.updatedAt),
+        })),
+      );
     }
   };
 
   const saveQuizzes = (newQuizzes: Quiz[]) => {
-    localStorage.setItem('savedQuizzes', JSON.stringify(newQuizzes));
+    localStorage.setItem("savedQuizzes", JSON.stringify(newQuizzes));
     setQuizzes(newQuizzes);
   };
 
@@ -56,7 +100,7 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
     toast({
       title: "Delete Disabled",
       description: "Quizzes cannot be deleted to ensure permanent storage.",
-      variant: "destructive"
+      variant: "destructive",
     });
   };
 
@@ -66,7 +110,7 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
       id: Date.now().toString(),
       title: `${quiz.title} (Copy)`,
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
     const updatedQuizzes = [...quizzes, newQuiz];
     saveQuizzes(updatedQuizzes);
@@ -78,11 +122,11 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
 
   const exportQuizzes = () => {
     const dataStr = JSON.stringify(quizzes, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
     const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = 'my-quizzes.json';
+    link.download = "my-quizzes.json";
     link.click();
     URL.revokeObjectURL(url);
     toast({
@@ -99,15 +143,16 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
     reader.onload = (e) => {
       try {
         const importedQuizzes = JSON.parse(e.target?.result as string);
-        const validQuizzes = importedQuizzes.filter((quiz: any) => 
-          quiz.title && quiz.questions && Array.isArray(quiz.questions)
+        const validQuizzes = importedQuizzes.filter(
+          (quiz: any) =>
+            quiz.title && quiz.questions && Array.isArray(quiz.questions),
         );
-        
+
         const newQuizzes = validQuizzes.map((quiz: any) => ({
           ...quiz,
           id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
           createdAt: new Date(),
-          updatedAt: new Date()
+          updatedAt: new Date(),
         }));
 
         const updatedQuizzes = [...quizzes, ...newQuizzes];
@@ -119,8 +164,9 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
       } catch (error) {
         toast({
           title: "Import Failed",
-          description: "The file format is invalid. Please check your JSON file.",
-          variant: "destructive"
+          description:
+            "The file format is invalid. Please check your JSON file.",
+          variant: "destructive",
         });
       }
     };
@@ -135,18 +181,29 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
     reader.onload = (e) => {
       try {
         const importedData = JSON.parse(e.target?.result as string);
-        
+
         // Check if it's an array of questions or a single quiz with questions
         let questions: any[] = [];
         if (Array.isArray(importedData)) {
           // Direct array of questions
-          questions = importedData.filter((q: any) => 
-            q.question && q.options && Array.isArray(q.options) && typeof q.correctAnswer === 'number'
+          questions = importedData.filter(
+            (q: any) =>
+              q.question &&
+              q.options &&
+              Array.isArray(q.options) &&
+              typeof q.correctAnswer === "number",
           );
-        } else if (importedData.questions && Array.isArray(importedData.questions)) {
+        } else if (
+          importedData.questions &&
+          Array.isArray(importedData.questions)
+        ) {
           // Quiz object with questions property
-          questions = importedData.questions.filter((q: any) => 
-            q.question && q.options && Array.isArray(q.options) && typeof q.correctAnswer === 'number'
+          questions = importedData.questions.filter(
+            (q: any) =>
+              q.question &&
+              q.options &&
+              Array.isArray(q.options) &&
+              typeof q.correctAnswer === "number",
           );
         }
 
@@ -154,7 +211,7 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
           toast({
             title: "No Valid Questions Found",
             description: "The file doesn't contain any valid questions.",
-            variant: "destructive"
+            variant: "destructive",
           });
           return;
         }
@@ -165,9 +222,9 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
           question: q.question,
           options: Array.isArray(q.options) ? q.options.slice(0, 4) : [],
           correctAnswer: q.correctAnswer,
-          difficulty: q.difficulty || 'medium',
-          friendHint: q.friendHint || '',
-          timeLimit: q.timeLimit || 30
+          difficulty: q.difficulty || "medium",
+          friendHint: q.friendHint || "",
+          timeLimit: q.timeLimit || 30,
         }));
 
         onCreateFromQuestions(processedQuestions);
@@ -178,15 +235,16 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
       } catch (error) {
         toast({
           title: "Import Failed",
-          description: "The file format is invalid. Please check your JSON file.",
-          variant: "destructive"
+          description:
+            "The file format is invalid. Please check your JSON file.",
+          variant: "destructive",
         });
       }
     };
     reader.readAsText(file);
-    
+
     // Reset the input
-    event.target.value = '';
+    event.target.value = "";
   };
 
   const createQuizFromJson = () => {
@@ -194,25 +252,36 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
       toast({
         title: "No JSON Data",
         description: "Please enter JSON data in the text area.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
     try {
       const importedData = JSON.parse(jsonInput);
-      
+
       // Check if it's an array of questions or a single quiz with questions
       let questions: any[] = [];
       if (Array.isArray(importedData)) {
         // Direct array of questions
-        questions = importedData.filter((q: any) => 
-          q.question && q.options && Array.isArray(q.options) && typeof q.correctAnswer === 'number'
+        questions = importedData.filter(
+          (q: any) =>
+            q.question &&
+            q.options &&
+            Array.isArray(q.options) &&
+            typeof q.correctAnswer === "number",
         );
-      } else if (importedData.questions && Array.isArray(importedData.questions)) {
+      } else if (
+        importedData.questions &&
+        Array.isArray(importedData.questions)
+      ) {
         // Quiz object with questions property
-        questions = importedData.questions.filter((q: any) => 
-          q.question && q.options && Array.isArray(q.options) && typeof q.correctAnswer === 'number'
+        questions = importedData.questions.filter(
+          (q: any) =>
+            q.question &&
+            q.options &&
+            Array.isArray(q.options) &&
+            typeof q.correctAnswer === "number",
         );
       }
 
@@ -220,7 +289,7 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
         toast({
           title: "No Valid Questions Found",
           description: "The JSON doesn't contain any valid questions.",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
@@ -231,13 +300,13 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
         question: q.question,
         options: Array.isArray(q.options) ? q.options.slice(0, 4) : [],
         correctAnswer: q.correctAnswer,
-        difficulty: q.difficulty || 'medium',
-        friendHint: q.friendHint || '',
-        timeLimit: q.timeLimit || 30
+        difficulty: q.difficulty || "medium",
+        friendHint: q.friendHint || "",
+        timeLimit: q.timeLimit || 30,
       }));
 
       onCreateFromQuestions(processedQuestions);
-      setJsonInput('');
+      setJsonInput("");
       setShowJsonInput(false);
       toast({
         title: "Questions Imported from JSON",
@@ -247,21 +316,24 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
       toast({
         title: "Invalid JSON Format",
         description: "Please check your JSON format and try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
 
-  const filteredQuizzes = quizzes.filter(quiz => {
-    const matchesSearch = quiz.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
-                         quiz.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
-    const matchesCategory = filters.category === 'all' || quiz.category === filters.category;
-    const matchesDifficulty = filters.difficulty === 'all' || quiz.difficulty === filters.difficulty;
+  const filteredQuizzes = quizzes.filter((quiz) => {
+    const matchesSearch =
+      quiz.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+      quiz.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
+    const matchesCategory =
+      filters.category === "all" || quiz.category === filters.category;
+    const matchesDifficulty =
+      filters.difficulty === "all" || quiz.difficulty === filters.difficulty;
     return matchesSearch && matchesCategory && matchesDifficulty;
   });
 
-  const categories = [...new Set(quizzes.map(quiz => quiz.category))];
-  const allTags = [...new Set(quizzes.flatMap(quiz => quiz.tags))];
+  const categories = [...new Set(quizzes.map((quiz) => quiz.category))];
+  const allTags = [...new Set(quizzes.flatMap((quiz) => quiz.tags))];
 
   return (
     <div className="min-h-screen p-4">
@@ -270,21 +342,26 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-3xl font-bold brand-gradient">Quiz Library</h1>
-            <p className="text-muted-foreground">Organize and manage your quiz collection</p>
+            <p className="text-muted-foreground">
+              Organize and manage your quiz collection
+            </p>
           </div>
           <div className="flex gap-2">
             <Button onClick={onBack} variant="outline">
               Back to Game
             </Button>
-            <Button 
-              onClick={() => setShowJsonInput(!showJsonInput)} 
+            <Button
+              onClick={() => setShowJsonInput(!showJsonInput)}
               variant="outline"
               className="mr-2"
             >
               <Code className="w-4 h-4 mr-2" />
-              {showJsonInput ? 'Hide' : 'Write'} JSON
+              {showJsonInput ? "Hide" : "Write"} JSON
             </Button>
-            <Button onClick={onCreateQuiz} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button
+              onClick={onCreateQuiz}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
               <Plus className="w-4 h-4 mr-2" />
               Create New Quiz
             </Button>
@@ -308,28 +385,42 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
                   <Input
                     placeholder="Search quizzes..."
                     value={filters.searchTerm}
-                    onChange={(e) => setFilters({ ...filters, searchTerm: e.target.value })}
+                    onChange={(e) =>
+                      setFilters({ ...filters, searchTerm: e.target.value })
+                    }
                     className="pl-10"
                   />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Category</label>
-                <Select value={filters.category} onValueChange={(value) => setFilters({ ...filters, category: value })}>
+                <Select
+                  value={filters.category}
+                  onValueChange={(value) =>
+                    setFilters({ ...filters, category: value })
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map(category => (
-                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Difficulty</label>
-                <Select value={filters.difficulty} onValueChange={(value) => setFilters({ ...filters, difficulty: value })}>
+                <Select
+                  value={filters.difficulty}
+                  onValueChange={(value) =>
+                    setFilters({ ...filters, difficulty: value })
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="All Difficulties" />
                   </SelectTrigger>
@@ -394,12 +485,15 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
                 Write Questions in JSON Format
               </CardTitle>
               <CardDescription>
-                Write your questions in JSON format and create a quiz directly from them.
+                Write your questions in JSON format and create a quiz directly
+                from them.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">JSON Questions Data</label>
+                <label className="text-sm font-medium">
+                  JSON Questions Data
+                </label>
                 <Textarea
                   value={jsonInput}
                   onChange={(e) => setJsonInput(e.target.value)}
@@ -425,17 +519,14 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
                 />
               </div>
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={createQuizFromJson}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Create Quiz from JSON
                 </Button>
-                <Button 
-                  onClick={() => setJsonInput('')}
-                  variant="outline"
-                >
+                <Button onClick={() => setJsonInput("")} variant="outline">
                   Clear
                 </Button>
               </div>
@@ -450,8 +541,8 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
               <BookOpen className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
               <h3 className="text-xl font-semibold mb-2">No Quizzes Found</h3>
               <p className="text-muted-foreground mb-6">
-                {quizzes.length === 0 
-                  ? "Create your first quiz to get started!" 
+                {quizzes.length === 0
+                  ? "Create your first quiz to get started!"
                   : "No quizzes match your current filters."}
               </p>
               <Button onClick={onCreateQuiz}>
@@ -461,19 +552,37 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
             </div>
           ) : (
             filteredQuizzes.map((quiz) => (
-              <Card key={quiz.id} className="card-gradient border-accent/30 hover:scale-105 transition-all">
+              <Card
+                key={quiz.id}
+                className="card-gradient border-accent/30 hover:scale-105 transition-all"
+              >
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <CardTitle className="text-lg mb-2">{quiz.title}</CardTitle>
-                      <CardDescription className="line-clamp-2">{quiz.description}</CardDescription>
+                      <CardTitle className="text-lg mb-2">
+                        {quiz.title}
+                      </CardTitle>
+                      <CardDescription className="line-clamp-2">
+                        {quiz.description}
+                      </CardDescription>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-3">
-                    <Badge variant="outline" className="border-accent text-accent">
+                    <Badge
+                      variant="outline"
+                      className="border-accent text-accent"
+                    >
                       {quiz.category}
                     </Badge>
-                    <Badge variant={quiz.difficulty === 'easy' ? 'default' : quiz.difficulty === 'medium' ? 'secondary' : 'destructive'}>
+                    <Badge
+                      variant={
+                        quiz.difficulty === "easy"
+                          ? "default"
+                          : quiz.difficulty === "medium"
+                            ? "secondary"
+                            : "destructive"
+                      }
+                    >
                       {quiz.difficulty}
                     </Badge>
                     <Badge variant="outline">
@@ -483,13 +592,19 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
                   {quiz.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">
                       {quiz.tags.slice(0, 3).map((tag, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="text-xs"
+                        >
                           <Tag className="w-3 h-3 mr-1" />
                           {tag}
                         </Badge>
                       ))}
                       {quiz.tags.length > 3 && (
-                        <Badge variant="outline" className="text-xs">+{quiz.tags.length - 3}</Badge>
+                        <Badge variant="outline" className="text-xs">
+                          +{quiz.tags.length - 3}
+                        </Badge>
                       )}
                     </div>
                   )}
@@ -500,24 +615,24 @@ export function QuizLibrary({ onCreateQuiz, onEditQuiz, onPlayQuiz, onCreateFrom
                     Created {quiz.createdAt.toLocaleDateString()}
                   </div>
                   <div className="flex gap-2">
-                    <Button 
-                      onClick={() => onPlayQuiz(quiz)} 
+                    <Button
+                      onClick={() => onPlayQuiz(quiz)}
                       className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
                       size="sm"
                     >
                       <Play className="w-4 h-4 mr-1" />
                       Play
                     </Button>
-                    <Button 
-                      onClick={() => onEditQuiz(quiz)} 
-                      variant="outline" 
+                    <Button
+                      onClick={() => onEditQuiz(quiz)}
+                      variant="outline"
                       size="sm"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
-                    <Button 
-                      onClick={() => duplicateQuiz(quiz)} 
-                      variant="outline" 
+                    <Button
+                      onClick={() => duplicateQuiz(quiz)}
+                      variant="outline"
                       size="sm"
                     >
                       <BookOpen className="w-4 h-4" />

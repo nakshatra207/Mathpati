@@ -1,15 +1,31 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Plus, Trash2, Save, Eye, Clock, Copy, Download, Upload } from 'lucide-react';
-import { type Question } from '@/data/questions';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  ArrowLeft,
+  Plus,
+  Trash2,
+  Save,
+  Eye,
+  Clock,
+  Copy,
+  Download,
+  Upload,
+} from "lucide-react";
+import { type Question } from "@/data/questions";
+import { useToast } from "@/hooks/use-toast";
 
 interface QuestionCreatorProps {
   onBack: () => void;
@@ -17,22 +33,29 @@ interface QuestionCreatorProps {
   existingQuestions?: Question[];
 }
 
-export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [] }: QuestionCreatorProps) {
+export function QuestionCreator({
+  onBack,
+  onSaveQuestions,
+  existingQuestions = [],
+}: QuestionCreatorProps) {
   const [questions, setQuestions] = useState<Question[]>(existingQuestions);
   const [newQuestion, setNewQuestion] = useState({
-    question: '',
-    options: ['', '', '', ''],
+    question: "",
+    options: ["", "", "", ""],
     correctAnswer: 0,
-    difficulty: 'easy' as 'easy' | 'medium' | 'hard',
-    friendHint: '',
-    timeLimit: 30
+    difficulty: "easy" as "easy" | "medium" | "hard",
+    friendHint: "",
+    timeLimit: 30,
   });
-  const [bulkQuestions, setBulkQuestions] = useState('');
-  const [activeTab, setActiveTab] = useState('single');
+  const [bulkQuestions, setBulkQuestions] = useState("");
+  const [activeTab, setActiveTab] = useState("single");
   const { toast } = useToast();
 
   const addQuestion = () => {
-    if (!newQuestion.question.trim() || newQuestion.options.some(opt => !opt.trim())) {
+    if (
+      !newQuestion.question.trim() ||
+      newQuestion.options.some((opt) => !opt.trim())
+    ) {
       toast({
         title: "Incomplete Question",
         description: "Please fill in all fields before adding the question.",
@@ -42,18 +65,18 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
     }
 
     const question: Question = {
-      id: Math.max(0, ...questions.map(q => q.id)) + 1,
-      ...newQuestion
+      id: Math.max(0, ...questions.map((q) => q.id)) + 1,
+      ...newQuestion,
     };
 
     setQuestions([...questions, question]);
     setNewQuestion({
-      question: '',
-      options: ['', '', '', ''],
+      question: "",
+      options: ["", "", "", ""],
       correctAnswer: 0,
-      difficulty: 'easy',
-      friendHint: '',
-      timeLimit: 30
+      difficulty: "easy",
+      friendHint: "",
+      timeLimit: 30,
     });
 
     toast({
@@ -79,18 +102,18 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
       }
 
       const validQuestions = parsedQuestions.map((q, index) => ({
-        id: Math.max(0, ...questions.map(q => q.id)) + index + 1,
+        id: Math.max(0, ...questions.map((q) => q.id)) + index + 1,
         question: q.question || `Question ${index + 1}`,
-        options: q.options || ['Option A', 'Option B', 'Option C', 'Option D'],
+        options: q.options || ["Option A", "Option B", "Option C", "Option D"],
         correctAnswer: q.correctAnswer || 0,
-        difficulty: q.difficulty || 'medium',
-        friendHint: q.friendHint || '',
-        timeLimit: q.timeLimit || 30
+        difficulty: q.difficulty || "medium",
+        friendHint: q.friendHint || "",
+        timeLimit: q.timeLimit || 30,
       }));
 
       setQuestions([...questions, ...validQuestions]);
-      setBulkQuestions('');
-      
+      setBulkQuestions("");
+
       toast({
         title: "Bulk Questions Added! 🎉",
         description: `${validQuestions.length} questions have been added successfully.`,
@@ -106,15 +129,16 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
 
   const exportQuestions = () => {
     const dataStr = JSON.stringify(questions, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = 'quiz-questions.json';
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
+    const dataUri =
+      "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+
+    const exportFileDefaultName = "quiz-questions.json";
+
+    const linkElement = document.createElement("a");
+    linkElement.setAttribute("href", dataUri);
+    linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
-    
+
     toast({
       title: "Questions Exported! 📄",
       description: "Your questions have been downloaded as a JSON file.",
@@ -130,7 +154,7 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
   };
 
   const removeQuestion = (id: number) => {
-    setQuestions(questions.filter(q => q.id !== id));
+    setQuestions(questions.filter((q) => q.id !== id));
     toast({
       title: "Question Removed",
       description: "The question has been deleted.",
@@ -151,22 +175,24 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
     const autoQuiz = {
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
       title: `Custom Questions Set - ${new Date().toLocaleDateString()}`,
-      description: 'Auto-saved quiz from question creator',
-      category: 'Custom',
-      difficulty: 'mixed' as const,
+      description: "Auto-saved quiz from question creator",
+      category: "Custom",
+      difficulty: "mixed" as const,
       questions: questions,
-      tags: ['auto-saved', 'custom'],
+      tags: ["auto-saved", "custom"],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     // Save to localStorage to ensure permanent storage
-    const existingQuizzes = JSON.parse(localStorage.getItem('savedQuizzes') || '[]');
+    const existingQuizzes = JSON.parse(
+      localStorage.getItem("savedQuizzes") || "[]",
+    );
     const updatedQuizzes = [...existingQuizzes, autoQuiz];
-    localStorage.setItem('savedQuizzes', JSON.stringify(updatedQuizzes));
+    localStorage.setItem("savedQuizzes", JSON.stringify(updatedQuizzes));
 
     onSaveQuestions(questions);
-    
+
     toast({
       title: "Questions Saved!",
       description: "Your questions have been saved and added to Quiz Library.",
@@ -186,9 +212,11 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
             <ArrowLeft className="w-4 h-4" />
             Back to Welcome
           </Button>
-          
-          <h1 className="text-3xl font-bold brand-gradient">Question Creator 📝</h1>
-          
+
+          <h1 className="text-3xl font-bold brand-gradient">
+            Question Creator 📝
+          </h1>
+
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="border-accent text-accent">
               {questions.length} Questions
@@ -224,12 +252,16 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
 
         {/* Question Creation Tabs */}
         <Card className="card-gradient border-accent/30 p-6 fade-in">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="single">Single Question</TabsTrigger>
               <TabsTrigger value="bulk">Bulk Import</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="single" className="space-y-6 mt-6">
               <h2 className="text-xl font-semibold flex items-center gap-2">
                 <Plus className="w-5 h-5" />
@@ -243,7 +275,12 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                     id="question"
                     placeholder="Enter your math question here..."
                     value={newQuestion.question}
-                    onChange={(e) => setNewQuestion({ ...newQuestion, question: e.target.value })}
+                    onChange={(e) =>
+                      setNewQuestion({
+                        ...newQuestion,
+                        question: e.target.value,
+                      })
+                    }
                     className="mt-1"
                   />
                 </div>
@@ -264,7 +301,10 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                           onChange={(e) => {
                             const newOptions = [...newQuestion.options];
                             newOptions[index] = e.target.value;
-                            setNewQuestion({ ...newQuestion, options: newOptions });
+                            setNewQuestion({
+                              ...newQuestion,
+                              options: newOptions,
+                            });
                           }}
                           className="flex-1"
                         />
@@ -278,7 +318,7 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                     <Label htmlFor="difficulty">Difficulty Level</Label>
                     <Select
                       value={newQuestion.difficulty}
-                      onValueChange={(value: 'easy' | 'medium' | 'hard') =>
+                      onValueChange={(value: "easy" | "medium" | "hard") =>
                         setNewQuestion({ ...newQuestion, difficulty: value })
                       }
                     >
@@ -292,13 +332,16 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="correctAnswer">Correct Answer</Label>
                     <Select
                       value={newQuestion.correctAnswer.toString()}
                       onValueChange={(value) =>
-                        setNewQuestion({ ...newQuestion, correctAnswer: parseInt(value) })
+                        setNewQuestion({
+                          ...newQuestion,
+                          correctAnswer: parseInt(value),
+                        })
                       }
                     >
                       <SelectTrigger>
@@ -314,7 +357,10 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                   </div>
 
                   <div>
-                    <Label htmlFor="timeLimit" className="flex items-center gap-2">
+                    <Label
+                      htmlFor="timeLimit"
+                      className="flex items-center gap-2"
+                    >
                       <Clock className="w-4 h-4" />
                       Time Limit (seconds)
                     </Label>
@@ -325,7 +371,10 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                       max="120"
                       value={newQuestion.timeLimit}
                       onChange={(e) =>
-                        setNewQuestion({ ...newQuestion, timeLimit: parseInt(e.target.value) || 30 })
+                        setNewQuestion({
+                          ...newQuestion,
+                          timeLimit: parseInt(e.target.value) || 30,
+                        })
                       }
                       placeholder="30"
                     />
@@ -338,7 +387,12 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                     id="friendHint"
                     placeholder="What would your friend say to help you solve this?"
                     value={newQuestion.friendHint}
-                    onChange={(e) => setNewQuestion({ ...newQuestion, friendHint: e.target.value })}
+                    onChange={(e) =>
+                      setNewQuestion({
+                        ...newQuestion,
+                        friendHint: e.target.value,
+                      })
+                    }
                     className="mt-1"
                   />
                 </div>
@@ -352,7 +406,7 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                 </Button>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="bulk" className="space-y-6 mt-6">
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -360,9 +414,11 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                   Bulk Import Questions
                 </h2>
                 <p className="text-sm text-muted-foreground">
-                  Paste JSON format questions below. Each question should have: question, options (array), correctAnswer (0-3), difficulty, friendHint, and timeLimit.
+                  Paste JSON format questions below. Each question should have:
+                  question, options (array), correctAnswer (0-3), difficulty,
+                  friendHint, and timeLimit.
                 </p>
-                
+
                 <div className="space-y-4">
                   <Label htmlFor="bulkQuestions">JSON Questions Data</Label>
                   <Textarea
@@ -381,7 +437,7 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
 ]`}
                     className="min-h-[200px] font-mono text-sm"
                   />
-                  
+
                   <Button
                     onClick={addBulkQuestions}
                     className="w-full flex items-center gap-2"
@@ -404,7 +460,10 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
               {questions.map((question, index) => (
-                <div key={question.id} className="quiz-option border-2 border-border p-4 rounded-lg">
+                <div
+                  key={question.id}
+                  className="quiz-option border-2 border-border p-4 rounded-lg"
+                >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <h3 className="font-semibold">{question.question}</h3>
@@ -413,9 +472,13 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                           {question.difficulty}
                         </Badge>
                         <Badge variant="outline" className="text-xs">
-                          Answer: {String.fromCharCode(65 + question.correctAnswer)}
+                          Answer:{" "}
+                          {String.fromCharCode(65 + question.correctAnswer)}
                         </Badge>
-                        <Badge variant="outline" className="text-xs flex items-center gap-1">
+                        <Badge
+                          variant="outline"
+                          className="text-xs flex items-center gap-1"
+                        >
                           <Clock className="w-3 h-3" />
                           {question.timeLimit || 30}s
                         </Badge>
@@ -436,8 +499,8 @@ export function QuestionCreator({ onBack, onSaveQuestions, existingQuestions = [
                         key={optIndex}
                         className={`p-2 rounded text-xs ${
                           optIndex === question.correctAnswer
-                            ? 'bg-accent/20 text-accent border border-accent/30'
-                            : 'bg-muted/20 text-muted-foreground'
+                            ? "bg-accent/20 text-accent border border-accent/30"
+                            : "bg-muted/20 text-muted-foreground"
                         }`}
                       >
                         {String.fromCharCode(65 + optIndex)}. {option}
