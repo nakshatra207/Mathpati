@@ -47,13 +47,38 @@ All colors MUST be HSL.
     --radius: 0.75rem;
 
     /* Elegant Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--muted)));
-    --gradient-hero: linear-gradient(135deg, hsl(210 85% 65%), hsl(350 85% 65%));
-    --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-    --gradient-mesh: radial-gradient(at 30% 40%, hsla(210,85%,65%,0.15) 0px, transparent 50%), 
-                     radial-gradient(at 80% 20%, hsla(350,85%,65%,0.12) 0px, transparent 50%), 
-                     radial-gradient(at 40% 80%, hsla(230,50%,70%,0.10) 0px, transparent 50%);
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--primary)),
+      hsl(var(--primary-dark))
+    );
+    --gradient-secondary: linear-gradient(
+      135deg,
+      hsl(var(--secondary)),
+      hsl(var(--muted))
+    );
+    --gradient-hero: linear-gradient(
+      135deg,
+      hsl(210 85% 65%),
+      hsl(350 85% 65%)
+    );
+    --gradient-glass: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.08),
+      rgba(255, 255, 255, 0.03)
+    );
+    --gradient-mesh:
+      radial-gradient(
+        at 30% 40%,
+        hsla(210, 85%, 65%, 0.15) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 80% 20%,
+        hsla(350, 85%, 65%, 0.12) 0px,
+        transparent 50%
+      ),
+      radial-gradient(at 40% 80%, hsla(230, 50%, 70%, 0.1) 0px, transparent 50%);
 
     /* Refined Shadows */
     --shadow-soft: 0 4px 20px hsl(var(--primary) / 0.15);
@@ -107,9 +132,18 @@ All colors MUST be HSL.
     --input: 220 15% 92%;
     --ring: 266 100% 60%;
 
-    --gradient-mesh: radial-gradient(at 40% 20%, hsla(266,100%,60%,0.2) 0px, transparent 50%), 
-                     radial-gradient(at 80% 0%, hsla(310,100%,60%,0.2) 0px, transparent 50%), 
-                     radial-gradient(at 0% 50%, hsla(199,89%,48%,0.2) 0px, transparent 50%);
+    --gradient-mesh:
+      radial-gradient(
+        at 40% 20%,
+        hsla(266, 100%, 60%, 0.2) 0px,
+        transparent 50%
+      ),
+      radial-gradient(
+        at 80% 0%,
+        hsla(310, 100%, 60%, 0.2) 0px,
+        transparent 50%
+      ),
+      radial-gradient(at 0% 50%, hsla(199, 89%, 48%, 0.2) 0px, transparent 50%);
   }
 
   .dark {
@@ -145,10 +179,12 @@ All colors MUST be HSL.
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: system-ui, -apple-system, sans-serif;
     background-image: var(--gradient-mesh);
     background-attachment: fixed;
     font-feature-settings: "cv11", "ss01";
@@ -160,15 +196,19 @@ All colors MUST be HSL.
   /* Refined Glass Morphism */
   .glass-card {
     @apply relative overflow-hidden rounded-xl;
-    background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.02)
+    );
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow: var(--shadow-glass);
   }
 
   .glass-card::before {
     @apply absolute inset-0 -z-10;
-    content: '';
+    content: "";
     background: var(--gradient-mesh);
     opacity: 0.2;
   }
@@ -176,17 +216,19 @@ All colors MUST be HSL.
   /* Elegant Card Gradient */
   .card-gradient {
     @apply relative overflow-hidden rounded-xl border;
-    background: linear-gradient(135deg, 
-      hsl(var(--card)) 0%, 
-      hsl(var(--card) / 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--card)) 0%,
+      hsl(var(--card) / 0.95) 100%
+    );
     backdrop-filter: blur(8px);
-    border-color: rgba(255,255,255,0.08);
+    border-color: rgba(255, 255, 255, 0.08);
     box-shadow: var(--shadow-soft);
   }
 
   /* Hero Gradient Text */
   .brand-gradient {
-    @apply font-display font-black;
+    @apply font-black;
     background: var(--gradient-hero);
     background-size: 200% 200%;
     -webkit-background-clip: text;
@@ -202,17 +244,19 @@ All colors MUST be HSL.
 
   .shimmer::before {
     @apply absolute inset-0;
-    content: '';
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba(255,255,255,0.4), 
-      transparent);
+    content: "";
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent
+    );
     animation: shimmer 2s infinite;
   }
 
   /* Refined Buttons */
   .hero-button {
-    @apply relative overflow-hidden font-display font-semibold;
+    @apply relative overflow-hidden font-semibold;
     background: var(--gradient-primary);
     box-shadow: var(--shadow-soft);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -247,15 +291,17 @@ All colors MUST be HSL.
   /* Refined Quiz Elements */
   .quiz-option {
     @apply relative overflow-hidden rounded-xl border transition-all duration-300;
-    background: linear-gradient(135deg, 
-      hsl(var(--card)) 0%, 
-      hsl(var(--muted) / 0.2) 100%);
+    background: linear-gradient(
+      135deg,
+      hsl(var(--card)) 0%,
+      hsl(var(--muted) / 0.2) 100%
+    );
     backdrop-filter: blur(8px);
-    border-color: rgba(255,255,255,0.1);
+    border-color: rgba(255, 255, 255, 0.1);
   }
 
   .quiz-option:hover {
-    @apply border-accent/50;
+    border-color: hsl(var(--accent) / 0.5);
     transform: translateY(-2px);
     box-shadow: var(--shadow-subtle);
   }
@@ -285,7 +331,7 @@ All colors MUST be HSL.
 
   .pulse-ring::before {
     @apply absolute inset-0 rounded-xl;
-    content: '';
+    content: "";
     background: hsl(var(--primary) / 0.2);
     animation: pulse 2s infinite;
   }
@@ -300,10 +346,18 @@ All colors MUST be HSL.
     animation: fade-up 0.6s ease-out backwards;
   }
 
-  .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
-  .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
-  .stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
-  .stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-children > *:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .stagger-children > *:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .stagger-children > *:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+  .stagger-children > *:nth-child(4) {
+    animation-delay: 0.4s;
+  }
 }
 
 /* Scrollbar Styling */
@@ -312,13 +366,14 @@ All colors MUST be HSL.
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-muted;
+  background-color: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-accent rounded-full;
+  background-color: hsl(var(--accent));
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-accent-glow;
+  background: hsl(var(--accent-glow));
 }

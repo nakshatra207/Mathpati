@@ -4,7 +4,7 @@ export interface Quiz {
   description: string;
   questions: Question[];
   category: string;
-  difficulty: 'easy' | 'medium' | 'hard' | 'mixed';
+  difficulty: "easy" | "medium" | "hard" | "mixed";
   createdAt: Date;
   updatedAt: Date;
   tags: string[];
@@ -15,7 +15,7 @@ export interface Question {
   question: string;
   options: string[];
   correctAnswer: number;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   friendHint?: string;
   timeLimit?: number;
 }

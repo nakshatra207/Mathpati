@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Trophy, Crown, Star, RotateCcw, Home } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Trophy, Crown, Star, RotateCcw, Home } from "lucide-react";
 
 interface WinnerScreenProps {
   onRestart: () => void;
@@ -17,18 +17,21 @@ export function WinnerScreen({ onRestart }: WinnerScreenProps) {
               <Star className="w-8 h-8 text-yellow-300 animate-pulse" />
             </div>
             <div className="absolute -top-2 -left-2">
-              <Star className="w-6 h-6 text-yellow-300 animate-pulse" style={{ animationDelay: '0.5s' }} />
+              <Star
+                className="w-6 h-6 text-yellow-300 animate-pulse"
+                style={{ animationDelay: "0.5s" }}
+              />
             </div>
           </div>
-          
+
           <h1 className="text-5xl font-bold kbc-gold-text">
             🎉 CONGRATULATIONS! 🎉
           </h1>
-          
+
           <h2 className="text-3xl font-semibold text-accent">
             You are the Mathpati Winner! 🏆
           </h2>
-          
+
           <p className="text-xl text-muted-foreground">
             You've conquered all 10 mathematical challenges!
           </p>
@@ -37,10 +40,14 @@ export function WinnerScreen({ onRestart }: WinnerScreenProps) {
         <div className="space-y-6">
           <div className="bg-gradient-to-r from-accent/20 to-primary/20 rounded-lg p-6 space-y-4">
             <Trophy className="w-12 h-12 text-accent mx-auto" />
-            
+
             <div className="space-y-2">
-              <h3 className="text-2xl font-bold kbc-gold-text">PERFECT SCORE!</h3>
-              <p className="text-lg font-semibold text-accent">10/10 Questions Correct</p>
+              <h3 className="text-2xl font-bold kbc-gold-text">
+                PERFECT SCORE!
+              </h3>
+              <p className="text-lg font-semibold text-accent">
+                10/10 Questions Correct
+              </p>
               <p className="text-sm text-muted-foreground">
                 You've demonstrated exceptional mathematical prowess!
               </p>
@@ -66,25 +73,28 @@ export function WinnerScreen({ onRestart }: WinnerScreenProps) {
           </div>
 
           <div className="bg-primary/10 rounded-lg p-4">
-            <p className="text-lg font-semibold text-accent mb-2">🌟 Achievement Unlocked!</p>
+            <p className="text-lg font-semibold text-accent mb-2">
+              🌟 Achievement Unlocked!
+            </p>
             <p className="text-sm text-muted-foreground">
-              "Ultimate Mathpati" - You've proven yourself as a true mathematical genius! 
-              Share your victory with friends and challenge them to beat your perfect score!
+              "Ultimate Mathpati" - You've proven yourself as a true
+              mathematical genius! Share your victory with friends and challenge
+              them to beat your perfect score!
             </p>
           </div>
 
           <div className="flex gap-4">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={onRestart}
               className="flex-1 bg-accent text-accent-foreground hover:bg-accent/90 text-lg py-6 kbc-button-glow"
             >
               <RotateCcw className="w-5 h-5 mr-2" />
               Play Again
             </Button>
-            
-            <Button 
-              size="lg" 
+
+            <Button
+              size="lg"
               variant="outline"
               onClick={() => window.location.reload()}
               className="flex-1 border-accent text-accent hover:bg-accent hover:text-accent-foreground text-lg py-6"
@@ -96,7 +106,8 @@ export function WinnerScreen({ onRestart }: WinnerScreenProps) {
         </div>
 
         <div className="text-xs text-muted-foreground">
-          "The only way to learn mathematics is to do mathematics." - Paul Halmos
+          "The only way to learn mathematics is to do mathematics." - Paul
+          Halmos
         </div>
       </Card>
     </div>

@@ -1,0 +1,17 @@
+{
+  "id": null,
+  "uid": "mathpati_dashboard",
+  "title": "Mathpati Dashboard",
+  "tags": ["mathpati"],
+  "timezone": "browser",
+  "schemaVersion": 41,
+  "version": 1,
+  "panels": [
+    {
+      "type": "text",
+      "title": "Welcome",
+      "gridPos": {"x":0,"y":0,"w":24,"h":4},
+      "options": {"content": "Mathpati Monitoring Active!"}
+    }
+  ]
+}

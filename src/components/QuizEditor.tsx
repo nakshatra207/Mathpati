@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { Quiz, Question } from '@/types/quiz';
-import { Save, ArrowLeft, Plus, Trash2, Edit, Tag, X } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { Quiz, Question } from "@/types/quiz";
+import { Save, ArrowLeft, Plus, Trash2, Edit, Tag, X } from "lucide-react";
 
 interface QuizEditorProps {
   quiz?: Quiz;
@@ -17,42 +23,47 @@ interface QuizEditorProps {
 
 export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
   const { toast } = useToast();
-  const [title, setTitle] = useState(quiz?.title || '');
-  const [description, setDescription] = useState(quiz?.description || '');
-  const [category, setCategory] = useState(quiz?.category || 'Math');
-  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard' | 'mixed'>(quiz?.difficulty || 'mixed');
+  const [title, setTitle] = useState(quiz?.title || "");
+  const [description, setDescription] = useState(quiz?.description || "");
+  const [category, setCategory] = useState(quiz?.category || "Math");
+  const [difficulty, setDifficulty] = useState<
+    "easy" | "medium" | "hard" | "mixed"
+  >(quiz?.difficulty || "mixed");
   const [tags, setTags] = useState<string[]>(quiz?.tags || []);
-  const [newTag, setNewTag] = useState('');
+  const [newTag, setNewTag] = useState("");
   const [questions, setQuestions] = useState<Question[]>(quiz?.questions || []);
   const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [showQuestionEditor, setShowQuestionEditor] = useState(false);
 
   const [newQuestion, setNewQuestion] = useState<Partial<Question>>({
-    question: '',
-    options: ['', '', '', ''],
+    question: "",
+    options: ["", "", "", ""],
     correctAnswer: 0,
-    difficulty: 'easy',
-    friendHint: '',
-    timeLimit: 30
+    difficulty: "easy",
+    friendHint: "",
+    timeLimit: 30,
   });
 
   const addTag = () => {
     if (newTag.trim() && !tags.includes(newTag.trim())) {
       setTags([...tags, newTag.trim()]);
-      setNewTag('');
+      setNewTag("");
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   const addQuestion = () => {
-    if (!newQuestion.question || newQuestion.options?.some(opt => !opt.trim())) {
+    if (
+      !newQuestion.question ||
+      newQuestion.options?.some((opt) => !opt.trim())
+    ) {
       toast({
         title: "Incomplete Question",
         description: "Please fill in the question and all options.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -64,17 +75,17 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
       correctAnswer: newQuestion.correctAnswer!,
       difficulty: newQuestion.difficulty!,
       friendHint: newQuestion.friendHint,
-      timeLimit: newQuestion.timeLimit
+      timeLimit: newQuestion.timeLimit,
     };
 
     setQuestions([...questions, question]);
     setNewQuestion({
-      question: '',
-      options: ['', '', '', ''],
+      question: "",
+      options: ["", "", "", ""],
       correctAnswer: 0,
-      difficulty: 'easy',
-      friendHint: '',
-      timeLimit: 30
+      difficulty: "easy",
+      friendHint: "",
+      timeLimit: 30,
     });
     setShowQuestionEditor(false);
     toast({
@@ -91,23 +102,27 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
       correctAnswer: question.correctAnswer,
       difficulty: question.difficulty,
       friendHint: question.friendHint,
-      timeLimit: question.timeLimit
+      timeLimit: question.timeLimit,
     });
     setShowQuestionEditor(true);
   };
 
   const updateQuestion = () => {
-    if (!editingQuestion || !newQuestion.question || newQuestion.options?.some(opt => !opt.trim())) {
+    if (
+      !editingQuestion ||
+      !newQuestion.question ||
+      newQuestion.options?.some((opt) => !opt.trim())
+    ) {
       toast({
         title: "Incomplete Question",
         description: "Please fill in the question and all options.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
 
-    const updatedQuestions = questions.map(q => 
-      q.id === editingQuestion.id 
+    const updatedQuestions = questions.map((q) =>
+      q.id === editingQuestion.id
         ? {
             ...q,
             question: newQuestion.question!,
@@ -115,20 +130,20 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
             correctAnswer: newQuestion.correctAnswer!,
             difficulty: newQuestion.difficulty!,
             friendHint: newQuestion.friendHint,
-            timeLimit: newQuestion.timeLimit
+            timeLimit: newQuestion.timeLimit,
           }
-        : q
+        : q,
     );
 
     setQuestions(updatedQuestions);
     setEditingQuestion(null);
     setNewQuestion({
-      question: '',
-      options: ['', '', '', ''],
+      question: "",
+      options: ["", "", "", ""],
       correctAnswer: 0,
-      difficulty: 'easy',
-      friendHint: '',
-      timeLimit: 30
+      difficulty: "easy",
+      friendHint: "",
+      timeLimit: 30,
     });
     setShowQuestionEditor(false);
     toast({
@@ -138,7 +153,7 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
   };
 
   const deleteQuestion = (questionId: number) => {
-    setQuestions(questions.filter(q => q.id !== questionId));
+    setQuestions(questions.filter((q) => q.id !== questionId));
     toast({
       title: "Question Deleted",
       description: "The question has been removed from your quiz.",
@@ -150,7 +165,7 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
       toast({
         title: "Missing Title",
         description: "Please enter a title for your quiz.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -159,7 +174,7 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
       toast({
         title: "Not Enough Questions",
         description: "You need at least 5 questions to save your quiz.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -173,13 +188,17 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
       questions,
       tags,
       createdAt: quiz?.createdAt || new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
     // Always save to localStorage to ensure permanent storage
-    const existingQuizzes = JSON.parse(localStorage.getItem('savedQuizzes') || '[]');
-    const quizIndex = existingQuizzes.findIndex((q: Quiz) => q.id === savedQuiz.id);
-    
+    const existingQuizzes = JSON.parse(
+      localStorage.getItem("savedQuizzes") || "[]",
+    );
+    const quizIndex = existingQuizzes.findIndex(
+      (q: Quiz) => q.id === savedQuiz.id,
+    );
+
     if (quizIndex >= 0) {
       // Update existing quiz
       existingQuizzes[quizIndex] = savedQuiz;
@@ -187,8 +206,8 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
       // Add new quiz
       existingQuizzes.push(savedQuiz);
     }
-    
-    localStorage.setItem('savedQuizzes', JSON.stringify(existingQuizzes));
+
+    localStorage.setItem("savedQuizzes", JSON.stringify(existingQuizzes));
 
     toast({
       title: "Quiz Saved Successfully! ✅",
@@ -205,16 +224,21 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold brand-gradient">
-              {quiz ? 'Edit Quiz' : 'Create New Quiz'}
+              {quiz ? "Edit Quiz" : "Create New Quiz"}
             </h1>
-            <p className="text-muted-foreground">Build your custom quiz with detailed questions</p>
+            <p className="text-muted-foreground">
+              Build your custom quiz with detailed questions
+            </p>
           </div>
           <div className="flex gap-2">
             <Button onClick={onBack} variant="outline">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>
-            <Button onClick={saveQuiz} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button
+              onClick={saveQuiz}
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
               <Save className="w-4 h-4 mr-2" />
               Save Quiz
             </Button>
@@ -245,7 +269,7 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                 />
               </div>
             </div>
-            
+
             <div className="space-y-2">
               <label className="text-sm font-medium">Description</label>
               <Textarea
@@ -258,8 +282,13 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Overall Difficulty</label>
-                <Select value={difficulty} onValueChange={(value: any) => setDifficulty(value)}>
+                <label className="text-sm font-medium">
+                  Overall Difficulty
+                </label>
+                <Select
+                  value={difficulty}
+                  onValueChange={(value: any) => setDifficulty(value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -278,7 +307,7 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                     placeholder="Add tag..."
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && addTag()}
+                    onKeyPress={(e) => e.key === "Enter" && addTag()}
                   />
                   <Button onClick={addTag} size="sm">
                     <Tag className="w-4 h-4" />
@@ -286,10 +315,14 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {tags.map((tag, index) => (
-                    <Badge key={index} variant="outline" className="cursor-pointer">
+                    <Badge
+                      key={index}
+                      variant="outline"
+                      className="cursor-pointer"
+                    >
                       {tag}
-                      <X 
-                        className="w-3 h-3 ml-1 hover:text-destructive" 
+                      <X
+                        className="w-3 h-3 ml-1 hover:text-destructive"
                         onClick={() => removeTag(tag)}
                       />
                     </Badge>
@@ -314,7 +347,9 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
           <CardContent>
             {questions.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">No questions added yet</p>
+                <p className="text-muted-foreground mb-4">
+                  No questions added yet
+                </p>
                 <Button onClick={() => setShowQuestionEditor(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add Your First Question
@@ -327,12 +362,14 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                     <CardContent className="p-4">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
-                          <h4 className="font-medium mb-2">Q{index + 1}: {question.question}</h4>
+                          <h4 className="font-medium mb-2">
+                            Q{index + 1}: {question.question}
+                          </h4>
                           <div className="grid grid-cols-2 gap-2 text-sm">
                             {question.options.map((option, optIndex) => (
-                              <div 
-                                key={optIndex} 
-                                className={`p-2 rounded ${optIndex === question.correctAnswer ? 'bg-success/20 border border-success' : 'bg-muted'}`}
+                              <div
+                                key={optIndex}
+                                className={`p-2 rounded ${optIndex === question.correctAnswer ? "bg-success/20 border border-success" : "bg-muted"}`}
                               >
                                 {String.fromCharCode(65 + optIndex)}: {option}
                               </div>
@@ -340,10 +377,18 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                           </div>
                         </div>
                         <div className="flex gap-2 ml-4">
-                          <Button onClick={() => editQuestion(question)} size="sm" variant="outline">
+                          <Button
+                            onClick={() => editQuestion(question)}
+                            size="sm"
+                            variant="outline"
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button onClick={() => deleteQuestion(question.id)} size="sm" variant="destructive">
+                          <Button
+                            onClick={() => deleteQuestion(question.id)}
+                            size="sm"
+                            variant="destructive"
+                          >
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
@@ -351,7 +396,9 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                       <div className="flex gap-2 text-xs">
                         <Badge variant="outline">{question.difficulty}</Badge>
                         <Badge variant="outline">{question.timeLimit}s</Badge>
-                        {question.friendHint && <Badge variant="outline">Has Hint</Badge>}
+                        {question.friendHint && (
+                          <Badge variant="outline">Has Hint</Badge>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -365,7 +412,9 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
         {showQuestionEditor && (
           <Card className="card-gradient border-accent/30">
             <CardHeader>
-              <CardTitle>{editingQuestion ? 'Edit Question' : 'Add New Question'}</CardTitle>
+              <CardTitle>
+                {editingQuestion ? "Edit Question" : "Add New Question"}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -373,7 +422,9 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                 <Textarea
                   placeholder="Enter your question..."
                   value={newQuestion.question}
-                  onChange={(e) => setNewQuestion({ ...newQuestion, question: e.target.value })}
+                  onChange={(e) =>
+                    setNewQuestion({ ...newQuestion, question: e.target.value })
+                  }
                   rows={2}
                 />
               </div>
@@ -383,14 +434,19 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {newQuestion.options?.map((option, index) => (
                     <div key={index} className="space-y-1">
-                      <label className="text-xs text-muted-foreground">Option {String.fromCharCode(65 + index)}</label>
+                      <label className="text-xs text-muted-foreground">
+                        Option {String.fromCharCode(65 + index)}
+                      </label>
                       <Input
                         placeholder={`Option ${String.fromCharCode(65 + index)}`}
                         value={option}
                         onChange={(e) => {
                           const newOptions = [...(newQuestion.options || [])];
                           newOptions[index] = e.target.value;
-                          setNewQuestion({ ...newQuestion, options: newOptions });
+                          setNewQuestion({
+                            ...newQuestion,
+                            options: newOptions,
+                          });
                         }}
                       />
                     </div>
@@ -401,9 +457,14 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Correct Answer</label>
-                  <Select 
-                    value={newQuestion.correctAnswer?.toString()} 
-                    onValueChange={(value) => setNewQuestion({ ...newQuestion, correctAnswer: parseInt(value) })}
+                  <Select
+                    value={newQuestion.correctAnswer?.toString()}
+                    onValueChange={(value) =>
+                      setNewQuestion({
+                        ...newQuestion,
+                        correctAnswer: parseInt(value),
+                      })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -418,9 +479,11 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Difficulty</label>
-                  <Select 
-                    value={newQuestion.difficulty} 
-                    onValueChange={(value: any) => setNewQuestion({ ...newQuestion, difficulty: value })}
+                  <Select
+                    value={newQuestion.difficulty}
+                    onValueChange={(value: any) =>
+                      setNewQuestion({ ...newQuestion, difficulty: value })
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -433,45 +496,59 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Time Limit (seconds)</label>
+                  <label className="text-sm font-medium">
+                    Time Limit (seconds)
+                  </label>
                   <Input
                     type="number"
                     min="10"
                     max="300"
                     value={newQuestion.timeLimit}
-                    onChange={(e) => setNewQuestion({ ...newQuestion, timeLimit: parseInt(e.target.value) || 30 })}
+                    onChange={(e) =>
+                      setNewQuestion({
+                        ...newQuestion,
+                        timeLimit: parseInt(e.target.value) || 30,
+                      })
+                    }
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Friend Hint (Optional)</label>
+                <label className="text-sm font-medium">
+                  Friend Hint (Optional)
+                </label>
                 <Textarea
                   placeholder="What would a friend say to help with this question?"
                   value={newQuestion.friendHint}
-                  onChange={(e) => setNewQuestion({ ...newQuestion, friendHint: e.target.value })}
+                  onChange={(e) =>
+                    setNewQuestion({
+                      ...newQuestion,
+                      friendHint: e.target.value,
+                    })
+                  }
                   rows={2}
                 />
               </div>
 
               <div className="flex gap-2 pt-4">
-                <Button 
+                <Button
                   onClick={editingQuestion ? updateQuestion : addQuestion}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
-                  {editingQuestion ? 'Update Question' : 'Add Question'}
+                  {editingQuestion ? "Update Question" : "Add Question"}
                 </Button>
-                <Button 
+                <Button
                   onClick={() => {
                     setShowQuestionEditor(false);
                     setEditingQuestion(null);
                     setNewQuestion({
-                      question: '',
-                      options: ['', '', '', ''],
+                      question: "",
+                      options: ["", "", "", ""],
                       correctAnswer: 0,
-                      difficulty: 'easy',
-                      friendHint: '',
-                      timeLimit: 30
+                      difficulty: "easy",
+                      friendHint: "",
+                      timeLimit: 30,
                     });
                   }}
                   variant="outline"
