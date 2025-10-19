@@ -16,7 +16,7 @@
     "@vitejs/plugin-react-swc": "^4.1.0",
     "@vitest/ui": "^3.2.4",
     "autoprefixer": "^10.4.20",
-    "jsdom": "^27.0.0",
+    "jsdom": "^27.0.1",
     "postcss": "^8.4.47",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
