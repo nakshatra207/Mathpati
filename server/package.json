@@ -1,0 +1,21 @@
+{
+  "name": "mathpati-metrics-server",
+  "version": "1.0.0",
+  "description": "Metrics collection server for Mathpati quiz application",
+  "main": "metrics-server.js",
+  "scripts": {
+    "start": "node metrics-server.js",
+    "dev": "nodemon metrics-server.js"
+  },
+  "keywords": ["metrics", "prometheus", "monitoring"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "prom-client": "^15.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

@@ -1,8 +1,25 @@
-import React, { useEffect, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Trophy, Play, Brain, Star, Plus, Zap, Timer, HelpCircle, Users, Library } from 'lucide-react';
+import React, { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Trophy,
+  Play,
+  Brain,
+  Star,
+  Plus,
+  Zap,
+  Timer,
+  HelpCircle,
+  Users,
+  Library,
+} from "lucide-react";
 
 interface WelcomeScreenProps {
   onStart: (useCustomQuestions?: boolean) => void;
@@ -12,34 +29,43 @@ interface WelcomeScreenProps {
   hasSavedQuizzes: boolean;
 }
 
-export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, hasCustomQuestions, hasSavedQuizzes }: WelcomeScreenProps) {
+export function WelcomeScreen({
+  onStart,
+  onCreateQuestions,
+  onManageQuizzes,
+  hasCustomQuestions,
+  hasSavedQuizzes,
+}: WelcomeScreenProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     // Play KBC entrance sound only once per session
     const playAudio = async () => {
-      if (audioRef.current && !sessionStorage.getItem('kbc-audio-played')) {
+      if (audioRef.current && !sessionStorage.getItem("kbc-audio-played")) {
         try {
           audioRef.current.volume = 0.6; // Set moderate volume
           await audioRef.current.play();
-          sessionStorage.setItem('kbc-audio-played', 'true');
+          sessionStorage.setItem("kbc-audio-played", "true");
         } catch (error) {
-          console.log('Audio autoplay prevented by browser:', error);
+          console.log("Audio autoplay prevented by browser:", error);
           // If autoplay fails, try to play on first user interaction
           const playOnInteraction = () => {
-            if (audioRef.current && !sessionStorage.getItem('kbc-audio-played')) {
+            if (
+              audioRef.current &&
+              !sessionStorage.getItem("kbc-audio-played")
+            ) {
               audioRef.current.play().catch(console.error);
-              sessionStorage.setItem('kbc-audio-played', 'true');
+              sessionStorage.setItem("kbc-audio-played", "true");
             }
-            document.removeEventListener('click', playOnInteraction);
-            document.removeEventListener('touchstart', playOnInteraction);
+            document.removeEventListener("click", playOnInteraction);
+            document.removeEventListener("touchstart", playOnInteraction);
           };
-          document.addEventListener('click', playOnInteraction);
-          document.addEventListener('touchstart', playOnInteraction);
+          document.addEventListener("click", playOnInteraction);
+          document.addEventListener("touchstart", playOnInteraction);
         }
       }
     };
-    
+
     playAudio();
   }, []);
 
@@ -56,24 +82,25 @@ export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, has
       <audio ref={audioRef} preload="auto">
         <source src="/kbc-entrance.mp3" type="audio/mpeg" />
       </audio>
-      
+
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
         <div className="max-w-7xl w-full space-y-12 text-center">
           {/* Hero Section */}
           <div className="space-y-8 slide-in-up">
             <div className="flex items-center justify-center gap-4 mb-8">
               <Trophy className="w-12 h-12 text-accent floating" />
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold brand-gradient">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold brand-gradient">
                 Kaun Banega Mathpati
               </h1>
               <Trophy className="w-12 h-12 text-accent floating" />
             </div>
-            
+
             <div className="text-center space-y-6 max-w-4xl mx-auto">
               <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed">
-                🚀 Create unlimited custom quizzes with 40+ questions, set custom timers, and share audience polls!
+                🚀 Create unlimited custom quizzes with 40+ questions, set
+                custom timers, and share audience polls!
               </p>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 stagger-children">
                 <div className="glass-card p-4 hover:shadow-soft transition-all duration-300">
                   <Trophy className="w-6 h-6 text-accent mx-auto mb-2" />
@@ -106,7 +133,8 @@ export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, has
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-sm leading-relaxed text-muted-foreground">
-                  Solve engaging math questions from beginner to expert level with customizable time limits and hints
+                  Solve engaging math questions from beginner to expert level
+                  with customizable time limits and hints
                 </CardDescription>
               </CardContent>
             </Card>
@@ -120,7 +148,8 @@ export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, has
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-sm leading-relaxed text-muted-foreground">
-                  Use strategic lifelines: 50-50, Audience Poll, Flip Question, and Ask a Friend to boost your success rate
+                  Use strategic lifelines: 50-50, Audience Poll, Flip Question,
+                  and Ask a Friend to boost your success rate
                 </CardDescription>
               </CardContent>
             </Card>
@@ -134,7 +163,8 @@ export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, has
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-sm leading-relaxed text-muted-foreground">
-                  Master all questions to become the ultimate Mathpati Champion and unlock exclusive achievements!
+                  Master all questions to become the ultimate Mathpati Champion
+                  and unlock exclusive achievements!
                 </CardDescription>
               </CardContent>
             </Card>
@@ -143,7 +173,7 @@ export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, has
           {/* Action Buttons */}
           <div className="space-y-8 bounce-in">
             <div className="flex flex-col lg:flex-row gap-6 justify-center items-center">
-              <Button 
+              <Button
                 onClick={() => onStart(false)}
                 size="lg"
                 className="px-10 py-6 text-xl font-semibold hero-button text-white transition-all duration-300 rounded-xl"
@@ -151,24 +181,27 @@ export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, has
                 <Play className="w-6 h-6 mr-3" />
                 Start Default Challenge
               </Button>
-              
+
               {hasCustomQuestions && (
-                <Button 
+                <Button
                   onClick={() => onStart(true)}
                   size="lg"
                   className="px-10 py-6 text-xl font-semibold glass-card transition-all duration-300 rounded-xl border border-accent/50 text-accent hover:bg-accent/10"
                 >
                   <Zap className="w-6 h-6 mr-3" />
                   Play Your Quiz
-                  <Badge className="ml-3 bg-accent/20 text-accent px-2 py-1 rounded-full text-sm" variant="secondary">
-                    {hasCustomQuestions ? 'Ready!' : '0'}
+                  <Badge
+                    className="ml-3 bg-accent/20 text-accent px-2 py-1 rounded-full text-sm"
+                    variant="secondary"
+                  >
+                    {hasCustomQuestions ? "Ready!" : "0"}
                   </Badge>
                 </Button>
               )}
             </div>
 
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button 
+              <Button
                 onClick={onCreateQuestions}
                 variant="outline"
                 size="lg"
@@ -177,7 +210,7 @@ export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, has
                 <Plus className="w-5 h-5 mr-2" />
                 Create Questions
               </Button>
-              <Button 
+              <Button
                 onClick={onManageQuizzes}
                 variant="outline"
                 size="lg"
@@ -186,16 +219,20 @@ export function WelcomeScreen({ onStart, onCreateQuestions, onManageQuizzes, has
                 <Library className="w-5 h-5 mr-2" />
                 Manage Quizzes
                 {hasSavedQuizzes && (
-                  <Badge className="ml-2 bg-accent/20 text-accent px-2 py-1 rounded-full text-xs" variant="secondary">
+                  <Badge
+                    className="ml-2 bg-accent/20 text-accent px-2 py-1 rounded-full text-xs"
+                    variant="secondary"
+                  >
                     New!
                   </Badge>
                 )}
               </Button>
             </div>
-            
+
             <div className="glass-card p-4 max-w-xl mx-auto rounded-lg">
               <p className="text-base font-medium text-muted-foreground text-center">
-                Ready to test your mathematical prowess? Choose your adventure and let's begin!
+                Ready to test your mathematical prowess? Choose your adventure
+                and let's begin!
               </p>
             </div>
           </div>

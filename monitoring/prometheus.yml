@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'mathpati-monitor'
+
+scrape_configs:
+  # Mathpati Metrics Server
+  - job_name: 'mathpati-app'
+    static_configs:
+      - targets: ['metrics-server:9090']
+        labels:
+          service: 'mathpati'
+          environment: 'production'
+    scrape_interval: 10s
+    scrape_timeout: 5s
+
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9091']
+
+  # Node Exporter for system metrics (optional)
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s

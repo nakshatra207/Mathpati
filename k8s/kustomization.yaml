@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+  - hpa.yaml
+  - monitoring/
+
+commonLabels:
+  app.kubernetes.io/name: mathpati
+  app.kubernetes.io/managed-by: kustomize
+
+images:
+  - name: mathpati
+    newName: ghcr.io/nakshatra207/mathpati
+    newTag: latest
+
+configMapGenerator:
+  - name: mathpati-config
+    literals:
+      - NODE_ENV=production
+      - LOG_LEVEL=info
+
+secretGenerator:
+  - name: mathpati-secrets
+    envs:
+      - secrets.env
+
+replicas:
+  - name: mathpati
+    count: 3

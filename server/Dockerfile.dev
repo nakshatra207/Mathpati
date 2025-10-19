@@ -1,0 +1,19 @@
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm install
+
+# Copy application files
+COPY . .
+
+# Expose metrics server port
+EXPOSE 9090
+
+# Start development server with nodemon
+CMD ["npm", "run", "dev"]

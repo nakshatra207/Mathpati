@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mathpati-config
+  namespace: production
+data:
+  NODE_ENV: "production"
+  PORT: "80"
+  LOG_LEVEL: "info"
+  METRICS_PORT: "9090"
