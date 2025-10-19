@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+  # ==========================================
+  # Development Application with Hot Reload
+  # ==========================================
+  mathpati-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        NODE_ENV: development
+    image: mathpati:dev
+    container_name: mathpati-dev
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:9090
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/dist
+    networks:
+      - mathpati-dev-network
+    command: npm run dev -- --host 0.0.0.0
+    stdin_open: true
+    tty: true
+
+  # ==========================================
+  # Development Metrics Server
+  # ==========================================
+  metrics-dev:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.dev
+    image: mathpati-metrics:dev
+    container_name: mathpati-metrics-dev
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    environment:
+      - NODE_ENV=development
+      - PORT=9090
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - mathpati-dev-network
+    command: npm run dev
+
+networks:
+  mathpati-dev-network:
+    driver: bridge
+    name: mathpati-dev-network

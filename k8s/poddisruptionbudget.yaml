@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: mathpati-pdb
+  namespace: production
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: mathpati
+  unhealthyPodEvictionPolicy: AlwaysAllow
