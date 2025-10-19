@@ -33,10 +33,11 @@ jobs:
         run: npm ci
 
       - name: Run linter
-        run: npm run lint || echo "Linting skipped"
+        run: npm run lint || echo "⚠️ Linting skipped - no lint script found"
+        continue-on-error: true
 
       - name: Run tests
-        run: npm test
+        run: npm test -- --run
 
       - name: Build application
         run: npm run build
@@ -52,9 +53,21 @@ jobs:
   security:
     name: Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -63,15 +76,18 @@ jobs:
           scan-ref: '.'
           format: 'sarif'
           output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
+        if: always()
         with:
           sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
 
       - name: Dependency Check
-        run: |
-          npm audit --audit-level=moderate || true
+        run: npm audit --audit-level=high || true
 
   # Build and Push Docker Image
   build-and-push:

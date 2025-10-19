@@ -40,7 +40,7 @@ jobs:
         continue-on-error: true
 
       - name: Run tests
-        run: npm test -- --run
+        run: npm test -- --run --reporter=verbose
 
       - name: Generate test coverage
         run: npm test -- --run --coverage || echo "⚠️ Coverage generation skipped"
