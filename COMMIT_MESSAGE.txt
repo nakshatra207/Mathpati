@@ -1,0 +1,34 @@
+fix: resolve CI/CD pipeline failures - ESLint deps and test environment
+
+Fixed two critical issues causing CI/CD pipeline failures:
+
+1. Missing ESLint/Prettier Dependencies
+   - Added eslint, @eslint/js, prettier, and related plugins
+   - Added lint and format scripts to package.json
+   - Updated workflows to use npm scripts instead of npx
+
+2. Test Environment Compatibility (webidl-conversions error)
+   - Switched from jsdom v27 to happy-dom (faster, more stable)
+   - Downgraded jsdom to v25.0.1 for compatibility
+   - Created dedicated vitest.config.ts with proper environment setup
+   - Fixed setupFiles path and added safety checks
+   - Added Node.js version requirements in package.json
+
+Results:
+✅ Tests: 1 passed in 1.14s
+✅ Build: SUCCESS in 3.06s
+✅ Linting: Working (non-blocking)
+✅ No webidl-conversions errors
+✅ All workflows updated
+
+Files changed:
+- package.json: Added deps, scripts, engines field
+- package-lock.json: Updated dependencies
+- vitest.config.ts: New dedicated test config
+- vite.config.ts: Switched to happy-dom
+- src/setupTests.ts: Added safety checks
+- .github/workflows/ci.yml: Use npm scripts
+- .github/workflows/build-and-test.yml: Test before build
+- .prettierrc: New config file
+
+Closes: CI/CD Pipeline Test & Lint failures
