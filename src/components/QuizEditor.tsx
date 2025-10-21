@@ -287,7 +287,7 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                 </label>
                 <Select
                   value={difficulty}
-                  onValueChange={(value: any) => setDifficulty(value)}
+                  onValueChange={(value: unknown) => setDifficulty(value as "easy" | "medium" | "hard" | "mixed")}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -481,8 +481,8 @@ export function QuizEditor({ quiz, onSave, onBack }: QuizEditorProps) {
                   <label className="text-sm font-medium">Difficulty</label>
                   <Select
                     value={newQuestion.difficulty}
-                    onValueChange={(value: any) =>
-                      setNewQuestion({ ...newQuestion, difficulty: value })
+                    onValueChange={(value: unknown) =>
+                      setNewQuestion({ ...newQuestion, difficulty: value as "easy" | "medium" | "hard" })
                     }
                   >
                     <SelectTrigger>

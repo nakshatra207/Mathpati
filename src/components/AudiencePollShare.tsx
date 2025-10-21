@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -47,6 +47,23 @@ export function AudiencePollShare({
     }
   }, [isOpen, question]);
 
+  const finalizePoll = useCallback(() => {
+    setIsActive(false);
+
+    // Convert votes to percentages
+    const percentages =
+      totalVotes > 0
+        ? pollResults.map((votes) => Math.round((votes / totalVotes) * 100))
+        : [25, 25, 25, 25]; // Default if no votes
+
+    onPollComplete(percentages);
+
+    toast({
+      title: "Poll Completed! 🗳️",
+      description: `${totalVotes} people voted. Here are the results!`,
+    });
+  }, [pollResults, totalVotes, onPollComplete, toast]);
+
   useEffect(() => {
     if (isActive && timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -54,7 +71,7 @@ export function AudiencePollShare({
     } else if (timeLeft === 0) {
       finalizePoll();
     }
-  }, [timeLeft, isActive]);
+  }, [timeLeft, isActive, finalizePoll]);
 
   // Simulate incoming votes (in a real app, this would be WebSocket updates)
   useEffect(() => {
@@ -94,22 +111,7 @@ export function AudiencePollShare({
     }
   };
 
-  const finalizePoll = () => {
-    setIsActive(false);
-
-    // Convert votes to percentages
-    const percentages =
-      totalVotes > 0
-        ? pollResults.map((votes) => Math.round((votes / totalVotes) * 100))
-        : [25, 25, 25, 25]; // Default if no votes
-
-    onPollComplete(percentages);
-
-    toast({
-      title: "Poll Completed! 🗳️",
-      description: `${totalVotes} people voted. Here are the results!`,
-    });
-  };
+  
 
   const getPercentage = (votes: number) => {
     return totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -80,6 +80,18 @@ export function QuizGame() {
 
   const currentQuestion = questions[currentQuestionIndex];
 
+  const handleLifelineTimeout = useCallback(() => {
+    setIsLifelineActive(false);
+    setActiveLifelineType(null);
+    if (activeLifelineType === "audience") {
+      setShowAudiencePoll(false);
+    }
+  }, [activeLifelineType]);
+
+
+
+  
+
   // Main question timer - pauses when lifeline is active
   useEffect(() => {
     if (
@@ -106,7 +118,7 @@ export function QuizGame() {
     } else if (lifelineTimeLeft === 0 && isLifelineActive) {
       handleLifelineTimeout();
     }
-  }, [lifelineTimeLeft, isLifelineActive]);
+  }, [lifelineTimeLeft, isLifelineActive, handleLifelineTimeout]);
 
   const startGame = (useCustomQuestions = false) => {
     const gameQuestions =
@@ -132,14 +144,16 @@ export function QuizGame() {
   useEffect(() => {
     const savedQuizzesData = localStorage.getItem("savedQuizzes");
     if (savedQuizzesData) {
-      const parsed = JSON.parse(savedQuizzesData);
-      setSavedQuizzes(
-        parsed.map((quiz: any) => ({
+      const parsed = JSON.parse(savedQuizzesData) as unknown[];
+      const normalized = parsed.map((q) => {
+        const quiz = q as Record<string, unknown>;
+        return {
           ...quiz,
-          createdAt: new Date(quiz.createdAt),
-          updatedAt: new Date(quiz.updatedAt),
-        })),
-      );
+          createdAt: new Date(quiz['createdAt'] as string),
+          updatedAt: new Date(quiz['updatedAt'] as string),
+        } as Quiz;
+      });
+      setSavedQuizzes(normalized);
     }
   }, []);
 
@@ -151,14 +165,15 @@ export function QuizGame() {
     setGameState("library");
   };
 
-  const goToEditor = (quiz?: Quiz, importedQuestions?: any[]) => {
+  const goToEditor = (quiz?: Quiz, importedQuestions?: unknown[]) => {
     if (importedQuestions) {
       // Create a new quiz with imported questions
+      const processedQuestions = (importedQuestions as unknown[]).map((q) => q as Question);
       const newQuiz: Quiz = {
         id: "",
         title: "Imported Quiz",
         description: "Quiz created from imported questions",
-        questions: importedQuestions,
+        questions: processedQuestions,
         category: "General",
         difficulty: "mixed",
         createdAt: new Date(),
@@ -264,16 +279,7 @@ export function QuizGame() {
   const handleGameOver = () => {
     setGameState("gameOver");
   };
-
-  const handleLifelineTimeout = () => {
-    setIsLifelineActive(false);
-    setActiveLifelineType(null);
-    if (activeLifelineType === "audience") {
-      setShowAudiencePoll(false);
-    }
-  };
-
-  const useLifeline = (type: LifelineType) => {
+  const applyLifeline = (type: LifelineType) => {
     if (!lifelines[type]) return;
 
     setLifelines({ ...lifelines, [type]: false });
@@ -286,7 +292,7 @@ export function QuizGame() {
     }
 
     switch (type) {
-      case "50-50":
+      case "50-50": {
         const wrongOptions = [0, 1, 2, 3].filter(
           (i) => i !== currentQuestion.correctAnswer,
         );
@@ -295,10 +301,12 @@ export function QuizGame() {
           .slice(0, 2);
         setEliminatedOptions(toEliminate);
         break;
-      case "audience":
+      }
+      case "audience": {
         setShowAudiencePoll(true);
         break;
-      case "flip":
+      }
+      case "flip": {
         const availableQuestions = mathQuestions.filter(
           (q) => !questions.includes(q),
         );
@@ -313,9 +321,11 @@ export function QuizGame() {
           setEliminatedOptions([]);
         }
         break;
-      case "hint":
+      }
+      case "hint": {
         setShowHint(true);
         break;
+      }
     }
   };
 
@@ -537,7 +547,7 @@ export function QuizGame() {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => useLifeline("50-50")}
+              onClick={() => applyLifeline("50-50")}
               disabled={!lifelines["50-50"] || showResult || isLifelineActive}
               className="flex flex-col items-center gap-2 p-6 h-auto border-2 hover:scale-105 transition-all disabled:opacity-50"
             >
@@ -550,7 +560,7 @@ export function QuizGame() {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => useLifeline("audience")}
+              onClick={() => applyLifeline("audience")}
               disabled={!lifelines.audience || showResult || isLifelineActive}
               className="flex flex-col items-center gap-2 p-6 h-auto border-2 hover:scale-105 transition-all disabled:opacity-50"
             >
@@ -563,7 +573,7 @@ export function QuizGame() {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => useLifeline("flip")}
+              onClick={() => applyLifeline("flip")}
               disabled={!lifelines.flip || showResult || isLifelineActive}
               className="flex flex-col items-center gap-2 p-6 h-auto border-2 hover:scale-105 transition-all disabled:opacity-50"
             >
@@ -576,7 +586,7 @@ export function QuizGame() {
             <Button
               variant="outline"
               size="lg"
-              onClick={() => useLifeline("hint")}
+              onClick={() => applyLifeline("hint")}
               disabled={!lifelines.hint || showResult || isLifelineActive}
               className="flex flex-col items-center gap-2 p-6 h-auto border-2 hover:scale-105 transition-all disabled:opacity-50"
             >

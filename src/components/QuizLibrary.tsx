@@ -29,7 +29,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Quiz, QuizFilters } from "@/types/quiz";
+import { Quiz, QuizFilters, Question } from "@/types/quiz";
 import {
   Search,
   Plus,
@@ -50,7 +50,7 @@ interface QuizLibraryProps {
   onCreateQuiz: () => void;
   onEditQuiz: (quiz: Quiz) => void;
   onPlayQuiz: (quiz: Quiz) => void;
-  onCreateFromQuestions: (questions: any[]) => void;
+  onCreateFromQuestions: (questions: Question[]) => void;
   onBack: () => void;
 }
 
@@ -79,14 +79,16 @@ export function QuizLibrary({
   const loadQuizzes = () => {
     const savedQuizzes = localStorage.getItem("savedQuizzes");
     if (savedQuizzes) {
-      const parsed = JSON.parse(savedQuizzes);
-      setQuizzes(
-        parsed.map((quiz: any) => ({
+      const parsed = JSON.parse(savedQuizzes) as unknown[];
+      const normalized = parsed.map((q) => {
+        const quiz = q as Record<string, unknown>;
+        return {
           ...quiz,
-          createdAt: new Date(quiz.createdAt),
-          updatedAt: new Date(quiz.updatedAt),
-        })),
-      );
+          createdAt: new Date(quiz['createdAt'] as string),
+          updatedAt: new Date(quiz['updatedAt'] as string),
+        } as Quiz;
+      });
+      setQuizzes(normalized);
     }
   };
 
@@ -142,18 +144,21 @@ export function QuizLibrary({
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const importedQuizzes = JSON.parse(e.target?.result as string);
-        const validQuizzes = importedQuizzes.filter(
-          (quiz: any) =>
-            quiz.title && quiz.questions && Array.isArray(quiz.questions),
-        );
+        const importedQuizzes = JSON.parse(e.target?.result as string) as unknown[];
+        const validQuizzes = (importedQuizzes || []).filter((q) => {
+          const quiz = q as Record<string, unknown>;
+          return quiz && quiz.title && quiz.questions && Array.isArray(quiz.questions as unknown);
+        });
 
-        const newQuizzes = validQuizzes.map((quiz: any) => ({
-          ...quiz,
-          id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        }));
+        const newQuizzes = validQuizzes.map((q) => {
+          const quiz = q as Record<string, unknown>;
+          return {
+            ...quiz,
+            id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          } as Quiz;
+        });
 
         const updatedQuizzes = [...quizzes, ...newQuizzes];
         saveQuizzes(updatedQuizzes);
@@ -183,28 +188,36 @@ export function QuizLibrary({
         const importedData = JSON.parse(e.target?.result as string);
 
         // Check if it's an array of questions or a single quiz with questions
-        let questions: any[] = [];
+        let questions: unknown[] = [];
         if (Array.isArray(importedData)) {
           // Direct array of questions
-          questions = importedData.filter(
-            (q: any) =>
-              q.question &&
-              q.options &&
-              Array.isArray(q.options) &&
-              typeof q.correctAnswer === "number",
-          );
+          questions = importedData.filter((q) => {
+            const x = q as unknown as Record<string, unknown>;
+            return (
+              x !== null &&
+              typeof x === 'object' &&
+              'question' in x &&
+              'options' in x &&
+              Array.isArray(x['options']) &&
+              typeof x['correctAnswer'] === 'number'
+            );
+          });
         } else if (
           importedData.questions &&
           Array.isArray(importedData.questions)
         ) {
           // Quiz object with questions property
-          questions = importedData.questions.filter(
-            (q: any) =>
-              q.question &&
-              q.options &&
-              Array.isArray(q.options) &&
-              typeof q.correctAnswer === "number",
-          );
+          questions = importedData.questions.filter((q) => {
+            const x = q as unknown as Record<string, unknown>;
+            return (
+              x !== null &&
+              typeof x === 'object' &&
+              'question' in x &&
+              'options' in x &&
+              Array.isArray(x['options']) &&
+              typeof x['correctAnswer'] === 'number'
+            );
+          });
         }
 
         if (questions.length === 0) {
@@ -217,15 +230,18 @@ export function QuizLibrary({
         }
 
         // Process questions to ensure they have proper structure
-        const processedQuestions = questions.map((q, index) => ({
-          id: index + 1,
-          question: q.question,
-          options: Array.isArray(q.options) ? q.options.slice(0, 4) : [],
-          correctAnswer: q.correctAnswer,
-          difficulty: q.difficulty || "medium",
-          friendHint: q.friendHint || "",
-          timeLimit: q.timeLimit || 30,
-        }));
+        const processedQuestions = questions.map((q, index) => {
+          const x = q as Record<string, unknown>;
+          return {
+            id: index + 1,
+            question: x['question'] as string,
+            options: Array.isArray(x['options']) ? (x['options'] as string[]).slice(0, 4) : [],
+            correctAnswer: x['correctAnswer'] as number,
+            difficulty: (x['difficulty'] as string) || "medium",
+            friendHint: (x['friendHint'] as string) || "",
+            timeLimit: (x['timeLimit'] as number) || 30,
+          } as Question;
+        });
 
         onCreateFromQuestions(processedQuestions);
         toast({
@@ -261,28 +277,36 @@ export function QuizLibrary({
       const importedData = JSON.parse(jsonInput);
 
       // Check if it's an array of questions or a single quiz with questions
-      let questions: any[] = [];
+      let questions: unknown[] = [];
       if (Array.isArray(importedData)) {
         // Direct array of questions
-        questions = importedData.filter(
-          (q: any) =>
-            q.question &&
-            q.options &&
-            Array.isArray(q.options) &&
-            typeof q.correctAnswer === "number",
-        );
+        questions = importedData.filter((q) => {
+          const x = q as unknown as Record<string, unknown>;
+          return (
+            x !== null &&
+            typeof x === 'object' &&
+            'question' in x &&
+            'options' in x &&
+            Array.isArray(x['options']) &&
+            typeof x['correctAnswer'] === 'number'
+          );
+        });
       } else if (
         importedData.questions &&
         Array.isArray(importedData.questions)
       ) {
         // Quiz object with questions property
-        questions = importedData.questions.filter(
-          (q: any) =>
-            q.question &&
-            q.options &&
-            Array.isArray(q.options) &&
-            typeof q.correctAnswer === "number",
-        );
+        questions = importedData.questions.filter((q) => {
+          const x = q as unknown as Record<string, unknown>;
+          return (
+            x !== null &&
+            typeof x === 'object' &&
+            'question' in x &&
+            'options' in x &&
+            Array.isArray(x['options']) &&
+            typeof x['correctAnswer'] === 'number'
+          );
+        });
       }
 
       if (questions.length === 0) {

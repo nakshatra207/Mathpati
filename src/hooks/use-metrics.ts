@@ -18,14 +18,24 @@ interface QuizCompleteMetric {
 }
 
 export const useMetrics = () => {
-  const sendMetric = useCallback(async (endpoint: string, data?: any) => {
+  const sendMetric = useCallback(async (endpoint: string, data?: unknown) => {
     try {
+      const body = data === undefined ? '{}' : JSON.stringify(data, (_key, value) => {
+        // Avoid serializing functions or DOM nodes
+        if (typeof value === 'function') return undefined;
+        if (typeof value === 'object' && value !== null) {
+          // If it's a DOM node, skip it
+          if ((value as unknown as { nodeType?: number }).nodeType) return undefined;
+        }
+        return value;
+      });
+
       await fetch(`${METRICS_SERVER_URL}/api/metrics/${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data || {}),
+        body,
       });
     } catch (error) {
       // Silently fail - don't break the app if metrics server is down
