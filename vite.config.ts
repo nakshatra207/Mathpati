@@ -58,8 +58,14 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['/src/setupTests.ts'],
+    setupFiles: ['./src/setupTests.ts'],
     css: true,
-    exclude: [...configDefaults.exclude, 'e2e/**']
+    exclude: [...configDefaults.exclude, 'e2e/**'],
+    pool: 'forks',
+    poolOptions: {
+      forks: {
+        singleFork: true
+      }
+    }
   }
 })
