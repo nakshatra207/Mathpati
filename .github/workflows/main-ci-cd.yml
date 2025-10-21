@@ -40,6 +40,8 @@ jobs:
         continue-on-error: true
 
       - name: Run tests
+        env:
+          NODE_OPTIONS: "--require=./src/vitest-preload.js"
         run: npm run test:run -- --reporter=verbose
 
       - name: Generate test coverage

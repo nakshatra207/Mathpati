@@ -24,6 +24,8 @@ jobs:
         run: npm ci
 
       - name: Run tests
+        env:
+          NODE_OPTIONS: "--require=./src/vitest-preload.js"
         run: npm run test:run
 
       - name: Build
