@@ -117,7 +117,7 @@ jobs:
 
       - name: Run tests
         env:
-          NODE_OPTIONS: "--require=${{ github.workspace }}/src/vitest-preload.js"
+          NODE_OPTIONS: "--require=${{ github.workspace }}/src/vitest-preload.cjs"
         run: npm test -- --run
 
       - name: Comment PR with results
