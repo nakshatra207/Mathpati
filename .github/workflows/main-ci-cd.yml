@@ -40,9 +40,13 @@ jobs:
         continue-on-error: true
 
       - name: Run tests
+        env:
+          NODE_OPTIONS: "--require=${{ github.workspace }}/src/vitest-preload.js"
         run: npm test -- --run --reporter=verbose
 
       - name: Generate test coverage
+        env:
+          NODE_OPTIONS: "--require=${{ github.workspace }}/src/vitest-preload.js"
         run: npm test -- --run --coverage || echo "⚠️ Coverage generation skipped"
         continue-on-error: true
 
