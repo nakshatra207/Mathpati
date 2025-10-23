@@ -212,6 +212,31 @@ make test-coverage
 make ci
 ```
 
+## 🧭 CI & Local Test Notes
+
+If you run into import-time errors from packages like `webidl-conversions` or `whatwg-url` when running tests, ensure you are using Node 20 (the CI uses Node 20). The project CI preloads a small CommonJS shim that fixes typed-array descriptors for some older libraries.
+
+- Node: Use Node 20 for local parity with CI. For example with nvm:
+
+```bash
+# switch to Node 20
+nvm install 20
+nvm use 20
+```
+
+- Vitest preload shim used in CI (required via NODE_OPTIONS):
+
+	- `src/vitest-preload.cjs` — this CommonJS file is required before tests start to patch certain runtime descriptors so dependencies that expect newer Node behavior work under the test runner.
+
+- Run the tests locally the same way CI does (this ensures the shim runs):
+
+```bash
+# run vitest preloading the shim (same as CI)
+NODE_OPTIONS=--require=./src/vitest-preload.cjs npm test -- --run
+```
+
+If you'd like me to remove the shim after upgrading the problematic dependency or to formalize this in the project's contribution docs, I can prepare a PR for that.
+
 ## 🔒 Security
 
 - ✅ Container vulnerability scanning (Trivy)
