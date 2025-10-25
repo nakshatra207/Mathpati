@@ -94,6 +94,51 @@ make docker-up
 - **shadcn/ui** - UI components
 - **React Query** - Data fetching
 
+## 🧩 Stacks Overview
+
+This project uses a collection of focused stacks. Below is a concise view of what is used in the application (runtime) and the supporting tech/tools used to build, test and deploy it.
+
+1) Application stacks (what the app uses at runtime)
+
+- Frontend:
+	- React 19 + TypeScript
+	- Vite (build/dev server)
+	- TailwindCSS for styling, shadcn/ui and Radix UI primitives for components
+	- React Router (client routing)
+	- TanStack React Query for client data fetching and caching
+
+- Backend / server (metrics):
+	- Node.js (metrics server)
+	- Express (simple metrics endpoint)
+	- prom-client for Prometheus metrics
+
+- Client-side libraries: Radix UI, lucide icons, sonner (toasts), class-variance-authority
+
+2) Developer tooling & CI/CD (how we build, test and deliver)
+
+- Build & bundling: Vite, @vitejs/plugin-react-swc
+- Testing: Vitest (v3), @testing-library/react, jsdom
+- Linting & formatting: ESLint, Prettier
+- Dev environment: npm, Makefile, Docker (dev/compose)
+- CI/CD: GitHub Actions (multiple workflows) — tests, build, security scanning, releases
+
+3) Infrastructure & monitoring
+
+- Containers & runtime: Docker, Docker Compose
+- Orchestration: Kubernetes manifests in `k8s/`
+- Infrastructure as code: Terraform
+- Monitoring & observability: Prometheus + Grafana, metrics server under `server/`
+
+4) Languages & frameworks
+
+- TypeScript / JavaScript (frontend + build tooling)
+- Node.js for server and dev tooling (CI runs Node 20 in workflows)
+- Shell scripts, Terraform HCL for infra
+
+Notes
+- CI is configured to use Node 20 to match modern dependency engine requirements; tests are preloaded with a small CommonJS shim `src/vitest-preload.cjs` to work around some import-time descriptor issues in libraries used by the test environment.
+- There is no application database included in this repo (the app is frontend-first with an auxiliary metrics server). If you plan to add a backend API or DB, we can add a recommended stack (Postgres, Prisma, etc.).
+
 ### DevOps & Infrastructure
 - **Docker** - Containerization
 - **Kubernetes** - Orchestration
